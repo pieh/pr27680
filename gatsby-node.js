@@ -42,17 +42,75 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   if (posts.length > 0) {
     posts.forEach((post, index) => {
+      if (index > 0) {
+        return
+      }
       const previousPostId = index === 0 ? null : posts[index - 1].id
       const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
 
-      createPage({
-        path: post.fields.slug,
+      const noSlashes = post.fields.slug.substring(
+        1,
+        post.fields.slug.length - 1
+      )
+
+      // console.log(post.fields.slug, noSlashes)
+
+      const paths = [
+        `/slashes/${noSlashes}/`,
+        `no-slashes/${noSlashes}`,
+        `/forward/${noSlashes}`,
+        `trail/${noSlashes}/`,
+      ]
+
+      // console.log(paths)
+
+      const obj = {
         component: blogPost,
         context: {
           id: post.id,
           previousPostId,
           nextPostId,
+          links: [
+            `/slashes/${noSlashes}`,
+            `/no-slashes/${noSlashes}`,
+            `/forward/${noSlashes}`,
+            `/trail/${noSlashes}`,
+
+            `/slashes/${noSlashes}/`,
+            `/no-slashes/${noSlashes}/`,
+            `/forward/${noSlashes}/`,
+            `/trail/${noSlashes}/`,
+
+            `/matchPath/${noSlashes}`,
+            `/matchPath/${noSlashes}/`,
+            `/matchPath/${noSlashes}/dynamic`,
+
+            `/matchPath2/${noSlashes}`,
+            `/matchPath2/${noSlashes}/`,
+            `/matchPath2/${noSlashes}/dynamic`,
+
+            `/some-404-page/`,
+          ],
         },
+      }
+
+      paths.forEach(path => {
+        createPage({
+          path,
+          ...obj,
+        })
+      })
+
+      createPage({
+        path: `/matchPath/${noSlashes}/`,
+        matchPath: `/matchPath/${noSlashes}/*`,
+        ...obj,
+      })
+
+      createPage({
+        path: `matchPath2/${noSlashes}`,
+        matchPath: `matchPath2/${noSlashes}/*`,
+        ...obj,
       })
     })
   }

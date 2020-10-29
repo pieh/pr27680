@@ -23,6 +23,11 @@ const SEO = ({ description, lang, meta, title }) => {
             }
           }
         }
+        markdownRemark(fields: { slug: { eq: "/hello-world/" } }) {
+          frontmatter {
+            title
+          }
+        }
       }
     `
   )

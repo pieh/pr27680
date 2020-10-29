@@ -19,6 +19,11 @@ const Bio = () => {
           }
         }
       }
+      markdownRemark(fields: { slug: { eq: "/hello-world/" } }) {
+        frontmatter {
+          title
+        }
+      }
       site {
         siteMetadata {
           author {
