@@ -5,91 +5,100 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
-function convert(input, distinct = new Set()) {
-  if (input instanceof Map) {
-    input = Object.fromEntries(input.entries())
-  }
+// function convert(input, distinct = new Set()) {
+//   if (input instanceof Map) {
+//     input = Object.fromEntries(input.entries())
+//   }
 
-  const out = Object.entries(input).reduce((acc, [key, val]) => {
-    let init = val
-    if (key === `/dev-404-page`) {
-      return acc
-    }
+//   const out = Object.entries(input).reduce((acc, [key, val]) => {
+//     let init = val
+//     if (key === `/dev-404-page`) {
+//       return acc
+//     }
 
-    if (val.result) {
-      val = val.result
-    }
+//     if (!val) {
+//       const tested = `_undefined_`
+//       acc[key] = tested
 
-    if (val.payload && val.payload.result) {
-      val = val.payload.result
-    }
+//       distinct.add(tested)
 
-    if (val.payload && val.payload.json) {
-      val = val.payload.json
-    }
+//       return acc
+//     }
 
-    if (!val || !val.data) {
-      console.log({ val, init })
-      return acc
-    }
+//     if (val.result) {
+//       val = val.result
+//     }
 
-    const tested = val.data.markdownRemark.frontmatter.title
+//     if (val.payload && val.payload.result) {
+//       val = val.payload.result
+//     }
 
-    acc[key] = tested
+//     if (val.payload && val.payload.json) {
+//       val = val.payload.json
+//     }
 
-    distinct.add(tested)
+//     if (!val || !val.data) {
+//       console.log({ val, init })
+//       return acc
+//     }
 
-    return acc
-  }, {})
-  return out
-}
+//     const tested = val?.data?.markdownRemark?.frontmatter?.title ?? `_wat_`
 
-function generate() {
-  let distinct = new Set()
+//     acc[key] = tested
 
-  const tmp = {
-    pageQueryData: convert(window.getPageQueryData(), distinct),
-    pageDb: convert(window.pageDb, distinct),
-    pageDataDb: convert(window.pageDataDb, distinct),
-    staticQueryData: convert(window.getStaticQueryData(), distinct),
-    staticQueryDb: convert(window.staticQueryDb, distinct),
-  }
-  return {
-    distinct: Array.from(distinct),
-    numbers: Object.fromEntries(
-      Object.entries(tmp).map(([key, value]) => [
-        key,
-        Object.keys(value).length,
-      ])
-    ),
-    ...tmp,
-  }
-}
+//     distinct.add(tested)
 
-function RuntimeCaches() {
-  const [i, setI] = useState(0)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setI(i => i + 1)
-    }, 250)
+//     return acc
+//   }, {})
+//   return out
+// }
 
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
-  const result = generate()
-  return (
-    <div>
-      {result.distinct.length > 1 ? (
-        <p style={{ color: "red" }}>Something is wrong!</p>
-      ) : (
-        ``
-      )}
+// function generate() {
+//   let distinct = new Set()
 
-      <pre>{JSON.stringify(result, null, 2)}</pre>
-    </div>
-  )
-}
+//   const tmp = {
+//     pageQueryData: convert(window.getPageQueryData(), distinct),
+//     pageDb: convert(window.pageDb, distinct),
+//     pageDataDb: convert(window.pageDataDb, distinct),
+//     staticQueryData: convert(window.getStaticQueryData(), distinct),
+//     staticQueryDb: convert(window.staticQueryDb, distinct),
+//   }
+//   return {
+//     distinct: Array.from(distinct),
+//     numbers: Object.fromEntries(
+//       Object.entries(tmp).map(([key, value]) => [
+//         key,
+//         Object.keys(value).length,
+//       ])
+//     ),
+//     ...tmp,
+//   }
+// }
+
+// function RuntimeCaches() {
+//   const [i, setI] = useState(0)
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       setI(i => i + 1)
+//     }, 250)
+
+//     return () => {
+//       clearInterval(interval)
+//     }
+//   }, [])
+//   const result = generate()
+//   return (
+//     <div>
+//       {result.distinct.length > 1 ? (
+//         <p style={{ color: "red" }}>Something is wrong!</p>
+//       ) : (
+//         ``
+//       )}
+
+//       <pre>{JSON.stringify(result, null, 2)}</pre>
+//     </div>
+//   )
+// }
 
 const BlogPostTemplate = ({ data, location, pageContext, path }) => {
   const post = data.markdownRemark
@@ -103,17 +112,7 @@ const BlogPostTemplate = ({ data, location, pageContext, path }) => {
         description={post.frontmatter.description || post.excerpt}
       />
       {/* <pre>{JSON.stringify(prop)}</pre> */}
-      <div style={{ display: "flex" }}>
-        <ul>
-          {pageContext.links.map(link => (
-            <li key={link}>
-              <Link to={link}>{link}</Link>
-              {location.pathname === link ? ` [c]` : ``}
-            </li>
-          ))}
-        </ul>
-        <RuntimeCaches />
-      </div>
+
       <article
         className="blog-post"
         itemScope
