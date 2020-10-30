@@ -116,6 +116,40 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 }
 
+exports.onCreatePage = ({ page, actions }) => {
+  if (!page.context.links) {
+    const noSlashes = `hello-world`
+
+    actions.createPage({
+      ...page,
+      context: {
+        ...page.context,
+        links: [
+          `/slashes/${noSlashes}`,
+          `/no-slashes/${noSlashes}`,
+          `/forward/${noSlashes}`,
+          `/trail/${noSlashes}`,
+
+          `/slashes/${noSlashes}/`,
+          `/no-slashes/${noSlashes}/`,
+          `/forward/${noSlashes}/`,
+          `/trail/${noSlashes}/`,
+
+          `/matchPath/${noSlashes}`,
+          `/matchPath/${noSlashes}/`,
+          `/matchPath/${noSlashes}/dynamic`,
+
+          `/matchPath2/${noSlashes}`,
+          `/matchPath2/${noSlashes}/`,
+          `/matchPath2/${noSlashes}/dynamic`,
+
+          `/some-404-page/`,
+        ],
+      },
+    })
+  }
+}
+
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
