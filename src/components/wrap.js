@@ -53,11 +53,14 @@ function generate() {
   let distinct = new Set()
 
   const tmp = {
-    pageQueryData: convert(window.getPageQueryData(), distinct),
-    pageDb: convert(window.pageDb, distinct),
-    pageDataDb: convert(window.pageDataDb, distinct),
-    staticQueryData: convert(window.getStaticQueryData(), distinct),
-    staticQueryDb: convert(window.staticQueryDb, distinct),
+    pageQueryData: convert(
+      window.getPageQueryData ? window.getPageQueryData() : {},
+      distinct
+    ),
+    pageDb: convert(window.pageDb || {}, distinct),
+    pageDataDb: convert(window.pageDataDb || {}, distinct),
+    staticQueryData: convert(window.getStaticQueryData() || {}, distinct),
+    staticQueryDb: convert(window.staticQueryDb || {}, distinct),
   }
   return {
     distinct: Array.from(distinct),
